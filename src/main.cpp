@@ -1,6 +1,10 @@
 
 #include <stdio.h>
+
+#include "platform/gpu.h"
+#include "platform/window.h"
 #include "fiber.h"
+
 
 void Fade(void *UserData)
 {
@@ -124,12 +128,23 @@ void Root(void *UserData)
 
 }
 
-int main() 
+void ImguiGPUNewframe();
+
+int main(int argc, char *argv[]) 
 {
+	GPU::CommandList *Cmd = GPU::GetCommandList();
 
 	DoTask(Root);
 
-	while ( RunScheduler() > 0) {}
+	while (frGetInputMessage() == EInputMessage::CONTINUE)
+	{
+
+		RunScheduler();
+
+		ImguiGPUNewframe();
+		GPU::RenderTest(Cmd);
+	}
+	
 
 	printf("-- OK --\n");
 
