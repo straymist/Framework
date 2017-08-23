@@ -172,6 +172,7 @@
     <ClCompile Include="src\platform\window.cpp" />
     <ClCompile Include="src\test_fiber.cpp" />
     <ClCompile Include="src\test_gui.cpp" />
+    <ClCompile Include="src\test_tetris.cpp" />
     <ClCompile Include="src\utility\fiber.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

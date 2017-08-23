@@ -3,14 +3,17 @@
 
 void Render()
 {
-	ImGui::FrameTick();
+	void MakeTetrisDrawList();
+	MakeTetrisDrawList();
+
+	//void BuildImguiContent();	
+	//BuildImguiContent();
 
 	GPU::CommandList *Cmd = GPU::GetCommandList();
 
 	GPU::BeginFrame(Cmd);
 
-	ImGui::Render();
-
+		ImGui::Render();
 	GPU::EndFrame(Cmd);
 }
 
@@ -25,10 +28,15 @@ int main(int argc, char *argv[])
 
 	frShowWindow(Win);
 	
-	//DoTask(Root);
+
+	void DoTetris();
+	DoTetris();
+	
 
 	while (frGetWindowMessage(Win) == EWindowMessage::CONTINUE)
 	{
+		ImGui::FrameTick();
+
 		RunScheduler();
 		Render();	
 	}
