@@ -157,7 +157,7 @@
     <ClInclude Include="src\imgui\stb_truetype.h" />
     <ClInclude Include="src\platform\d3dx12.h" />
     <ClInclude Include="src\platform\gpu.h" />
-    <ClInclude Include="src\platform\imgui_dx12.h" />
+    <ClInclude Include="src\platform\gui.h" />
     <ClInclude Include="src\platform\window.h" />
   </ItemGroup>
   <ItemGroup>

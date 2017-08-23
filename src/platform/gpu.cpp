@@ -249,6 +249,7 @@ namespace GPU
 				D3D12_RESOURCE_STATE_COPY_DEST,
 				nullptr,
 				IID_PPV_ARGS(&TexResource->mResource)));
+			TexResource->m_state = GPU::BarrierState::COPY_DST;
 
 			const UINT64 uploadBufferSize = GetRequiredIntermediateSize(TexResource->mResource.Get(), 0, 1);
 
@@ -415,8 +416,8 @@ namespace GPU
 		// Describe and create the swap chain.
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
 		swapChainDesc.BufferCount = FrameBufferCount;
-		swapChainDesc.Width = GApplication.Window->GetWidth();
-		swapChainDesc.Height = GApplication.Window->GetHeight();
+		swapChainDesc.Width = gWindow.Width;
+		swapChainDesc.Height = gWindow.Height;
 		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
@@ -425,7 +426,7 @@ namespace GPU
 		ComPtr<IDXGISwapChain1> swapChain;
 		ThrowIfFailed(m_factory->CreateSwapChainForHwnd(
 			m_commandQueue.Get(),		// Swap chain needs the queue so that it can force a flush on it.
-			(HWND)GApplication.Window->GetHandle(),
+			(HWND)gWindow.Handle,
 			&swapChainDesc,
 			nullptr,
 			nullptr,
@@ -433,7 +434,7 @@ namespace GPU
 			));
 
 		// This sample does not support fullscreen transitions.
-		ThrowIfFailed(m_factory->MakeWindowAssociation((HWND)GApplication.Window->GetHandle(), DXGI_MWA_NO_ALT_ENTER));
+		ThrowIfFailed(m_factory->MakeWindowAssociation((HWND)gWindow.Handle, DXGI_MWA_NO_ALT_ENTER));
 
 		ThrowIfFailed(swapChain.As(&m_swapChain));
 		m_currentBackBufferIndex = m_swapChain->GetCurrentBackBufferIndex();
@@ -612,7 +613,7 @@ namespace GPU
 	}
 
 
-	void Init()
+	void Open()
 	{
 		CreateDebugLayer();
 		CreateDevice();
@@ -718,66 +719,28 @@ namespace GPU
 		vp.MaxDepth = MaxDepth;
 		InList->m_commandList->RSSetViewports(1, &vp);
 	}
-	bool show_test_window = true;
-	bool show_another_window = false;
-	ImVec4 clear_col = ImColor(114, 144, 154);
 
-	void BuildImguiContent()
+
+	void BeginFrame(CommandList * List)
 	{
-
-		// 1. Show a simple window
-		// Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
-		{
-			static float f = 0.0f;
-			ImGui::Text("Hello, world!");
-			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-			ImGui::ColorEdit3("clear color", (float*)&clear_col);
-			if (ImGui::Button("Test Window")) show_test_window ^= 1;
-			if (ImGui::Button("Another Window")) show_another_window ^= 1;
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		}
-		// 2. Show another simple window, this time using an explicit Begin/End pair
-		if (show_another_window)
-		{
-			ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
-			ImGui::Begin("Another Window", &show_another_window);
-			ImGui::Text("Hello");
-			ImGui::End();
-		}
-
-		// 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
-		if (show_test_window)
-		{
-			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);     // Normally user code doesn't need/want to call it because positions are saved in .ini file anyway. Here we just want to make the demo initial state a bit more friendly!
-			ImGui::ShowTestWindow(&show_test_window);
-		}
-
-	}
-
-
-
-	void RenderTest(CommandList * List)
-	{
-
-		BuildImguiContent();
-
 		GPU::Reset(List);
 
-			GPU::WaitForResource(List, &m_FrameBuffers[m_frameIndex], BarrierState::RTV);
+		GPU::WaitForResource(List, &m_FrameBuffers[m_frameIndex], BarrierState::RTV);
 
-			List->m_commandList->OMSetRenderTargets(1, &m_FrameBuffers[m_frameIndex].mRTV.mCPU, FALSE, nullptr);
+		List->m_commandList->OMSetRenderTargets(1, &m_FrameBuffers[m_frameIndex].mRTV.mCPU, FALSE, nullptr);
 
-			float ClearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+		float ClearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
 
-			GPU::ClearRTV(List, &m_FrameBuffers[m_frameIndex], ClearColor);
+		GPU::ClearRTV(List, &m_FrameBuffers[m_frameIndex], ClearColor);
+	}
 
-			ImGui::Render();
-
-			// Indicate that the back buffer will now be used to present.
-			GPU::WaitForResource(List, &m_FrameBuffers[m_frameIndex], BarrierState::PRESENT);
+	void EndFrame(CommandList *List)
+	{
+		// Indicate that the back buffer will now be used to present.
+		GPU::WaitForResource(List, &m_FrameBuffers[m_frameIndex], BarrierState::PRESENT);
 
 		GPU::Close(List);
-		
+
 		// Execute the command list.
 		GPU::SendCommandListToQueue(List);
 
@@ -911,7 +874,7 @@ namespace GPU
 	}
 
 
-	void Fini()
+	void Close()
 	{
 		ReleaseResources();
 	}

@@ -51,10 +51,10 @@
     <ClInclude Include="src\platform\gpu.h">
       <Filter>Source Files\platform</Filter>
     </ClInclude>
-    <ClInclude Include="src\platform\imgui_dx12.h">
+    <ClInclude Include="src\platform\window.h">
       <Filter>Source Files\platform</Filter>
     </ClInclude>
-    <ClInclude Include="src\platform\window.h">
+    <ClInclude Include="src\platform\gui.h">
       <Filter>Source Files\platform</Filter>
     </ClInclude>
   </ItemGroup>

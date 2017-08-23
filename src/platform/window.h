@@ -1,39 +1,22 @@
 #pragma once
-
 #include <string>
 
-class OSWindow
-{
-public:
-	void SetWidth(int width);
-	void SetHeight(int height);
-	void SetTitle(const wchar_t* title);
-	int GetWidth();
-	int GetHeight();
-	std::wstring GetTitle();
-	void *GetHandle();
-	void SetHandle(void * Handle);
-
-private:
-	int Width;
-	int Height;
-	void *Handle;
-	std::wstring Title;
-	
-};
-
-enum EInputMessage 
+enum EWindowMessage
 {
 	CONTINUE,
 	EXIT
 };
-
-size_t frCreateWindow(int width, int height, const wchar_t *title);
-EInputMessage frGetInputMessage();
-
-struct OSApplication
+struct PlatformWindow
 {
-	OSWindow* Window;
+	size_t Width;
+	size_t Height;
+	const wchar_t *Title;
+	void * Handle;
 };
 
-extern OSApplication GApplication;
+extern PlatformWindow gWindow;
+
+PlatformWindow* frCreateWindow(int width, int height, const wchar_t *title);
+void frShowWindow(PlatformWindow *window);
+EWindowMessage frGetWindowMessage(PlatformWindow *window);
+void dprintf(const char * fmt, ...);

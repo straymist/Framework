@@ -36,8 +36,8 @@ namespace GPU
 	class CommandList;
 	class CommandQueue;
 
-	void Init();
-	void Fini();
+	void Open();
+	void Close();
 	
 	// Resource Management	
 	Resource* CreateVertexBuffer(int TotalSizeInBytes, int StrideSizeInBytes);
@@ -74,6 +74,10 @@ namespace GPU
 	void RenderTest(CommandList * InList);
 	void NotifyToResizeBuffer(int Width, int Height);
 	void ResizeFrameBuffers();	
+
+	// 
+	void BeginFrame(CommandList *InList);
+	void EndFrame(CommandList *InList);
 };
 
 

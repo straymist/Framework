@@ -1,7 +1,9 @@
 
 #include <stdio.h>
 
+#include "imgui/imgui.h"
 #include "platform/gpu.h"
+#include "platform/gui.h"
 #include "platform/window.h"
 #include "fiber.h"
 
@@ -10,7 +12,7 @@ void Fade(void *UserData)
 {
 	for (int i = 0; i < 10; ++i)
 	{
-		printf("Fade Tick %d\n", i);
+		dprintf("Fade Tick %d\n", i);
 		WaitForFrame();
 	}
 }
@@ -19,7 +21,7 @@ void Fade2(void *UserData)
 {
 	for (int i = 0; i < 10; ++i)
 	{
-		printf("Fade2 Tick %d\n", i);
+		dprintf("Fade2 Tick %d\n", i);
 		WaitForFrame();
 	}
 }
@@ -28,7 +30,7 @@ void Anim(void *UserData)
 {
 	for (int i = 0; i < 10; ++i)
 	{
-		printf("Anim Tick %d\n", i);
+		dprintf("Anim Tick %d\n", i);
 		WaitForFrame();
 	}
 }
@@ -39,7 +41,7 @@ void Walk(void *ud)
 {
 	for (int i = 0; i < 10; ++i)
 	{
-		printf("Walk Tick %d\n", i);
+		dprintf("Walk Tick %d\n", i);
 		WaitForFrame();
 	}
 }
@@ -48,7 +50,7 @@ void Patrol(void *ud)
 {
 	for (int i = 0; i < 10; ++i)
 	{
-		printf("Patrol Tick %d\n", i);
+		dprintf("Patrol Tick %d\n", i);
 		WaitForFrame();
 	}
 }
@@ -57,7 +59,7 @@ void Idle(void *ud)
 {
 	for (int i = 0; i < 10; ++i)
 	{
-		printf("Idle Tick %d\n", i);
+		dprintf("Idle Tick %d\n", i);
 		WaitForFrame();
 	}
 }
@@ -101,7 +103,7 @@ void Root(void *UserData)
 	DoTask(Fade, &Wait);
 	WaitForCounter(&Wait, 0);
 
-	printf("Done\n");
+	dprintf("Done\n");
 
 	BlackBoard bb1;
 	BlackBoard bb2;
@@ -110,7 +112,7 @@ void Root(void *UserData)
 	bb2.State = 1;
 	bb3.State = 2;
 
-	printf("BT test begin \n");
+	dprintf("BT test begin \n");
 	Wait = 1;
 	DoTask(BehaviorTree, &Wait, &bb1);
 	WaitForCounter(&Wait, 0);
@@ -124,29 +126,87 @@ void Root(void *UserData)
 	WaitForCounter(&Wait, 0);
 
 
-	printf("BT done\n");
+	dprintf("BT done\n");
 
 }
 
-void ImguiGPUNewframe();
+
+
+bool show_test_window = true;
+bool show_another_window = false;
+ImVec4 clear_col = ImColor(114, 144, 154);
+void BuildImguiContent()
+{
+
+	// 1. Show a simple window
+	// Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
+	{
+		static float f = 0.0f;
+		ImGui::Text("Hello, world!");
+		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+		ImGui::ColorEdit3("clear color", (float*)&clear_col);
+		if (ImGui::Button("Test Window")) show_test_window ^= 1;
+		if (ImGui::Button("Another Window")) show_another_window ^= 1;
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+	// 2. Show another simple window, this time using an explicit Begin/End pair
+	if (show_another_window)
+	{
+		ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
+		ImGui::Begin("Another Window", &show_another_window);
+		ImGui::Text("Hello");
+		ImGui::End();
+	}
+
+	// 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
+	if (show_test_window)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);     // Normally user code doesn't need/want to call it because positions are saved in .ini file anyway. Here we just want to make the demo initial state a bit more friendly!
+		ImGui::ShowTestWindow(&show_test_window);
+	}
+
+}
+
+
+void Render()
+{
+	ImGui::FrameTick();
+
+
+	BuildImguiContent();
+
+
+	GPU::CommandList *Cmd = GPU::GetCommandList();
+
+	GPU::BeginFrame(Cmd);
+
+	ImGui::Render();
+
+	GPU::EndFrame(Cmd);
+}
 
 int main(int argc, char *argv[]) 
 {
-	GPU::CommandList *Cmd = GPU::GetCommandList();
+	auto Win = frCreateWindow(1280, 720, L"Demo");
+	
+	GPU::Open();
+	ImGui::Open();
 
+	frShowWindow(Win);
+	
 	DoTask(Root);
 
-	while (frGetInputMessage() == EInputMessage::CONTINUE)
+	while (frGetWindowMessage(Win) == EWindowMessage::CONTINUE)
 	{
-
 		RunScheduler();
-
-		ImguiGPUNewframe();
-		GPU::RenderTest(Cmd);
+		Render();	
 	}
 	
 
-	printf("-- OK --\n");
+	ImGui::Close();
+	GPU::Close();
+
+	dprintf("-- OK --\n");
 
 	return 0;
 }
