@@ -74,8 +74,7 @@ int Cy = 0;
 
 const int SpaceW = 30;
 const int SpaceH = 50;
-TetrisType Space[SpaceW][SpaceH];
-TetrisType FinalSpace[SpaceW][SpaceH];
+TetrisType Space[SpaceH][SpaceW];
 const int BrickWidth = 10;
 const int RenderOffsetX = 10;
 const int RenderOffsetY = 10;
@@ -175,7 +174,7 @@ void DrawBrick(int x, int y, TetrisType TType)
 	dl->AddQuad(q[0], q[1], q[2], q[3], color, 2.0f);
 	
 }
-void PutTetris(TetrisType Space[SpaceW][SpaceH], TetrisType Tetris[4][4], int x, int y)
+void PutTetris(TetrisType Space[SpaceH][SpaceW], TetrisType Tetris[4][4], int x, int y)
 {
 	for (int i = 0; i < 4; ++i)
 	{
