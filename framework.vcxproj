@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="src\container.h" />
     <ClInclude Include="src\fiber.h" />
+    <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\imgui\imconfig.h" />
     <ClInclude Include="src\imgui\imgui.h" />
     <ClInclude Include="src\imgui\imgui_internal.h" />

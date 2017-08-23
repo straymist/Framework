@@ -1,11 +1,5 @@
 
-#include <stdio.h>
-
-#include "platform/gpu.h"
-#include "platform/gui.h"
-#include "platform/window.h"
-#include "fiber.h"
-
+#include "framework.h"
 
 void Fade(void *UserData)
 {
@@ -128,7 +122,6 @@ void Root(void *UserData)
 	dprintf("BT done\n");
 
 }
-
 
 
 bool show_test_window = true;

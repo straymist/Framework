@@ -57,6 +57,9 @@
     <ClInclude Include="src\platform\gui.h">
       <Filter>Source Files\platform</Filter>
     </ClInclude>
+    <ClInclude Include="src\framework.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\fiber.cpp">
