@@ -156,6 +156,15 @@ void DrawBrick(int x, int y, TetrisType TType)
 		break;
 	case TetrisType::L:
 		color = blue;
+	case TetrisType::R:
+		color = blue;
+	case TetrisType::N:
+		color = blue;
+	case TetrisType::Z:
+		color = blue;
+	case TetrisType::I:
+		color = blue;
+
 		break;
 	}
 
@@ -184,10 +193,38 @@ void PutTetris(TetrisType Space[4][4], TetrisType Tetris[4][4])
 	for (int i = 0; i < 4; ++i)
 	{
 		for (int j = 0; j < 4; ++j)
-		{
-			if (Tetris[i][j] != TetrisType::_ )
-				Space[i][j] = Tetris[i][j];
+		{			
+			Space[i][j] = Tetris[i][j];
 		}
+	}
+}
+
+void PutTetrisType(TetrisType Space[4][4], TetrisType TType)
+{
+	switch (TType)
+	{
+	case TetrisType::I:
+		PutTetris(Space, IShape);
+		break;
+	case TetrisType::L:
+		PutTetris(Space, LShape);
+		break;
+	case TetrisType::R:
+		PutTetris(Space, RShape);
+		break;
+	case TetrisType::N:
+		PutTetris(Space, NShape);
+		break;
+	case TetrisType::Z:
+		PutTetris(Space, ZShape);
+		break;
+	case TetrisType::T:
+		PutTetris(Space, TShape);
+		break;
+	case TetrisType::O:
+		PutTetris(Space, OShape);
+		break;	
+		
 	}
 }
 
@@ -248,13 +285,34 @@ bool HasCollision()
 }
 
 
+
+
+uint64_t Rand()
+{
+	static uint64_t seed = 123456789;
+	uint64_t m = 4294967296;
+	uint64_t a = 1103515245;
+	uint64_t c = 12345;
+	seed = (a * seed + c) % m;
+	return seed;
+}
+
+
+
+TetrisType GetNextType()
+{
+	TetrisType NextType = TetrisType::_;
+	while ( NextType == TetrisType::_)
+		NextType = (TetrisType)(uint8_t)(Rand() % 7);
+	return NextType;
+
+}
+
 void TetrisRoutine(void *InOutParam)
 {
-	PutTetris(Active, LShape);
+	PutTetrisType(Active, TetrisType::O);
 	Cx = SpaceW/2;
-	Cy = 20;
-	//FillLine(SpaceH - 1, TetrisType::O);
-	//FillLine(SpaceH - 10, TetrisType::T);
+	Cy = 10;
 
 	while (1)
 	{
@@ -262,11 +320,12 @@ void TetrisRoutine(void *InOutParam)
 		if (HasCollision())
 		{
 			PutTetris(Space, Active, Cx,Cy-1);
-			PutTetris(Active, LShape);
+			TetrisType NextType = (TetrisType)(uint8_t)(Rand() % 7);
+			PutTetrisType(Active, GetNextType());
 			Cy = 20;
 		}
 			
-		for(int i = 0 ;i < 15 ;++i)
+		for(int i = 0 ;i < 5 ;++i)
 			WaitForFrame();
 	}
 }
