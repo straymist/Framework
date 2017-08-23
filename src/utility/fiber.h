@@ -1,4 +1,4 @@
-
+#pragma once
 #include <functional>
 
 void DoTaskImpl(std::function<void(void*)> &fn, int *pCounter = nullptr, void *pUserData = nullptr);

@@ -19,14 +19,11 @@
     <Filter Include="Source Files\platform">
       <UniqueIdentifier>{6f4e5a74-e5c1-46e3-b332-0785e2d4559f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\utility">
+      <UniqueIdentifier>{6dc90b37-fd7f-43ca-aeb9-6fcbec866730}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\container.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\fiber.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\imgui\imconfig.h">
       <Filter>Source Files\imgui</Filter>
     </ClInclude>
@@ -60,11 +57,14 @@
     <ClInclude Include="src\framework.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\utility\container.h">
+      <Filter>Source Files\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utility\fiber.h">
+      <Filter>Source Files\utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\fiber.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -85,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="src\platform\window.cpp">
       <Filter>Source Files\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utility\fiber.cpp">
+      <Filter>Source Files\utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

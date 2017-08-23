@@ -1,3 +1,4 @@
+#pragma once
 template <typename Entry, int MAX_COUNT>
 class FixedArray
 {
