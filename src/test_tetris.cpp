@@ -2,7 +2,7 @@
 
 enum TetrisType : uint8_t
 {
-	_ = 0 ,
+	_ = 0,
 	O,
 	T,
 	L,
@@ -109,7 +109,6 @@ void DrawBoundary(int x1, int y1, int x2, int y2)
 	dl->AddQuad(q[0], q[1], q[2],q[3], color);
 
 
-
 }
 
 void DrawBrick(int x, int y, TetrisType TType)
@@ -173,7 +172,7 @@ void DrawBrick(int x, int y, TetrisType TType)
 	color.Value.x *= scale;
 	color.Value.y *= scale;
 	color.Value.z *= scale;
-	dl->AddQuad(q[0], q[1], q[2], q[3], color);
+	dl->AddQuad(q[0], q[1], q[2], q[3], color, 2.0f);
 	
 }
 void PutTetris(TetrisType Space[SpaceW][SpaceH], TetrisType Tetris[4][4], int x, int y)
@@ -236,18 +235,6 @@ void FillLine(int y, TetrisType TType)
 	}
 }
 
-
-
-void TetrisTick()
-{
-	PutTetris(Space, OShape, 10, 10);
-	PutTetris(Space, TShape, 50, 50);
-	PutTetris(Space, LShape, 30, 30);
-	PutTetris(Active, LShape);
-	Cx = 30;
-	Cy = 20;	
-}
-
 int Clamp(int a, int v, int b)
 {
 	if (v >= b)
@@ -283,9 +270,6 @@ bool HasCollision()
 	}
 	return false;
 }
-
-
-
 
 uint64_t Rand()
 {
