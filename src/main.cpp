@@ -1,7 +1,6 @@
 
 #include <stdio.h>
 
-#include "imgui/imgui.h"
 #include "platform/gpu.h"
 #include "platform/gui.h"
 #include "platform/window.h"
@@ -187,6 +186,8 @@ void Render()
 
 int main(int argc, char *argv[]) 
 {
+	dprintf("------------------- Framework Begin -------------------------------\n");
+
 	auto Win = frCreateWindow(1280, 720, L"Demo");
 	
 	GPU::Open();
@@ -202,11 +203,10 @@ int main(int argc, char *argv[])
 		Render();	
 	}
 	
-
 	ImGui::Close();
 	GPU::Close();
 
-	dprintf("-- OK --\n");
+	dprintf("------------------- Framework Closed -------------------------------\n");
 
 	return 0;
 }

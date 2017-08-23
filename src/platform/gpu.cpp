@@ -1,13 +1,16 @@
+#include <vector>
 #include <stdint.h>
-#include "GPU.h"
+#include <wrl.h>
 #include <d3d12.h>
 #include <dxgi1_4.h>
-#include <wrl.h>
 #include <D3Dcompiler.h>
-#include "window.h"
+
 #include "d3dx12.h"
-#include "../imgui/imgui.h"
-#include <vector>
+#include "gpu.h"
+#include "window.h"
+#include "imgui/imgui.h"
+
+
 using Microsoft::WRL::ComPtr;
 
 namespace GPU
