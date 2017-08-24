@@ -74,8 +74,8 @@ int Cy = 0;
 
 const int SpaceW = 30;
 const int SpaceH = 50;
-TetrisType Space[SpaceW][SpaceH];
-TetrisType FinalSpace[SpaceW][SpaceH];
+TetrisType Space[SpaceH][SpaceW];
+
 const int BrickWidth = 10;
 const int RenderOffsetX = 10;
 const int RenderOffsetY = 10;
@@ -175,7 +175,7 @@ void DrawBrick(int x, int y, TetrisType TType)
 	dl->AddQuad(q[0], q[1], q[2], q[3], color, 2.0f);
 	
 }
-void PutTetris(TetrisType Space[SpaceW][SpaceH], TetrisType Tetris[4][4], int x, int y)
+void PutTetris(TetrisType Space[SpaceH][SpaceW], TetrisType Tetris[4][4], int x, int y)
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -294,6 +294,9 @@ TetrisType GetNextType()
 
 void TetrisRoutine(void *InOutParam)
 {
+	for (int i = 0; i < SpaceH; ++i)
+		FillLine(i, TetrisType::_);
+
 	PutTetrisType(Active, TetrisType::O);
 	Cx = SpaceW/2;
 	Cy = 10;
@@ -323,7 +326,7 @@ void DoTetris()
 void MakeTetrisDrawList()
 {
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
+	
 	// Draw Space 
 	for (int i = 0; i < SpaceH; ++i)
 	{

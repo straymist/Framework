@@ -111,6 +111,8 @@ size_t RunScheduler()
 VOID WINAPI FiberTaskDispatcher(LPVOID lpFiberParameter)
 {
 	FiberEntry* ent = (FiberEntry*)lpFiberParameter;
+	CurrentFiber = ent;
+	// Barrier Here?
 	ent->Func(ent->pUserData);
 
 	if (ent->pCounter)
