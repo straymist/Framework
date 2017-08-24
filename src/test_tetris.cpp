@@ -75,7 +75,6 @@ int Cy = 0;
 const int SpaceW = 30;
 const int SpaceH = 50;
 TetrisType Space[SpaceH][SpaceW];
-
 const int BrickWidth = 10;
 const int RenderOffsetX = 10;
 const int RenderOffsetY = 10;
