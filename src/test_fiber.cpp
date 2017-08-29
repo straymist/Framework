@@ -1,4 +1,5 @@
 #include "framework.h"
+#include "test_entries.h"
 
 void Fade(void *UserData)
 {
@@ -120,4 +121,10 @@ void Root(void *UserData)
 
 	dprintf("BT done\n");
 
+}
+
+
+void CFiberTest::Open()
+{
+	DoTask(Root);
 }

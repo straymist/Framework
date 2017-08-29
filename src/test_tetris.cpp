@@ -1,4 +1,5 @@
 #include "framework.h"
+#include "test_entries.h"
 
 enum TetrisType : uint8_t
 {
@@ -302,6 +303,16 @@ void TetrisRoutine(void *InOutParam)
 
 	while (1)
 	{
+
+		if (frIsKeyPressed(EKeyInput::KB_LEFT))
+		{			
+			Cx--;
+		}
+		if (frIsKeyPressed(EKeyInput::KB_RIGHT))
+		{			
+			Cx++;
+		}
+
 		Cy++;
 		if (HasCollision())
 		{
@@ -347,4 +358,15 @@ void MakeTetrisDrawList()
 	int y = RenderOffsetY;
 	DrawBoundary(x,y, x+SpaceW-1, y+SpaceH-1);
 	
+}
+
+
+void CTetrisTest::Open()
+{
+	DoTetris();
+}
+
+void CTetrisTest::BuildGUI()
+{
+	MakeTetrisDrawList();
 }

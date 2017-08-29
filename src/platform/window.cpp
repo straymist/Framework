@@ -6,8 +6,6 @@
 #include "gpu.h"
 #include "gui.h"
 
-
-
 extern LRESULT ImGui_ImplDX12_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -120,6 +118,56 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 
 	return 0;
 }
+
+bool frIsKeyPressed(EKeyInput Key)
+{
+
+	int VKey = 0;
+	switch (Key)
+	{
+		case KB_UP:
+			VKey = VK_UP;
+			break;
+		case KB_DOWN:
+			VKey = VK_DOWN;
+			break;
+		case KB_LEFT:
+			VKey = VK_LEFT;
+			break;
+
+		case KB_RIGHT:
+			VKey = VK_RIGHT;
+			break;
+
+		case KB_ENTER:
+			VKey = VK_RETURN;
+			break;
+		case KB_SPACE:
+			VKey = VK_SPACE;
+			break;
+		case KB_W:
+			VKey = 'W';
+			break;
+		case KB_S:
+			VKey = 'S';
+			break;
+		case KB_A:
+			VKey = 'A';
+			break;
+		case KB_D:
+			VKey = 'D';
+			break;
+
+		default:
+			break;
+	}
+
+	SHORT Res =GetAsyncKeyState(VKey);
+	SHORT High = (Res & 0xFF00) >> 8;
+	SHORT Low = (Res & 0x00FF);
+	return High > 0;
+}
+
 
 void dprintf(const char * fmt, ...)
 {

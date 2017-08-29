@@ -1,18 +1,25 @@
 
 #include "framework.h"
 
+#define TEST_FILE "test_entries.h"
+#define TEST_CLASS CTetrisTest
+
+#if defined(TEST_CLASS) && defined(TEST_FILE)
+	#include TEST_FILE
+	TEST_CLASS gTestImpl;
+	CTest *gTest = &gTestImpl;
+#else
+	CTest *gTest = nullptr;
+#endif 
+
 void Render()
 {
-	void MakeTetrisDrawList();
-	MakeTetrisDrawList();
-
-	//void BuildImguiContent();	
-	//BuildImguiContent();
+	if ( gTest )
+		gTest->BuildGUI();
 
 	GPU::CommandList *Cmd = GPU::GetCommandList();
 
 	GPU::BeginFrame(Cmd);
-
 		ImGui::Render();
 	GPU::EndFrame(Cmd);
 }
@@ -28,19 +35,19 @@ int main(int argc, char *argv[])
 
 	frShowWindow(Win);
 	
-
-	void DoTetris();
-	DoTetris();
-	
+	if (gTest)
+		gTest->Open();
 
 	while (frGetWindowMessage(Win) == EWindowMessage::CONTINUE)
 	{
 		ImGui::FrameTick();
-
 		RunScheduler();
 		Render();	
 	}
 	
+	if (gTest)
+		gTest->Close();
+
 	ImGui::Close();
 	GPU::Close();
 

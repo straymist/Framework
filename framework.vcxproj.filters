@@ -63,6 +63,9 @@
     <ClInclude Include="src\utility\fiber.h">
       <Filter>Source Files\utility</Filter>
     </ClInclude>
+    <ClInclude Include="src\test_entries.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
