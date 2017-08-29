@@ -417,48 +417,68 @@ void TetrisRoutine(void *InOutParam)
 	Cy = 5;
 	RotateState = 0;
 
+	class HandleInput
+	{
+	public:
+		void Do()
+		{
+			int PreCx = Cx;
+
+			TetrisType Temp[4][4];
+			PutTetris(Temp, Active);
+
+			if (frIsKeyPressed(EKeyInput::KB_A))
+			{
+				RotateTetris(false);
+			}
+
+			if (frIsKeyPressed(EKeyInput::KB_D))
+			{
+				RotateTetris(true);
+			}
+
+			if (HasCollision())
+			{
+				PutTetris(Active, Temp);
+			}
+
+			if (frIsKeyPressed(EKeyInput::KB_LEFT))
+			{
+				Cx--;
+			}
+			if (frIsKeyPressed(EKeyInput::KB_RIGHT))
+			{
+				Cx++;
+			}
+
+			if (HasHorizantalCollision())
+			{
+				Cx = PreCx;
+			}
+
+			
+			if (frIsKeyPressed(EKeyInput::KB_DOWN))
+			{
+				while (!HasCollision())
+					Cy++;
+				if (HasCollision())
+					Cy--;
+			}
+		}
+	};
+
+	HandleInput input;
+
 	while (1)
 	{
-		int PreCx = Cx;
 
-		TetrisType Temp[4][4];
-		PutTetris(Temp, Active);
-
-		if (frIsKeyPressed(EKeyInput::KB_A))
+		for (int i = 0; i < 5; ++i)
 		{
-			RotateTetris(false);
+			input.Do();
+			WaitForFrame();
 		}
 
-		if (frIsKeyPressed(EKeyInput::KB_D))
-		{
-			RotateTetris(true);
-		}
-
-		if (HasCollision())
-		{
-			PutTetris(Active, Temp);
-		}
-
-		if (frIsKeyPressed(EKeyInput::KB_LEFT))
-		{			
-			Cx--;
-		}
-		if (frIsKeyPressed(EKeyInput::KB_RIGHT))
-		{			
-			Cx++;
-		}
-
-		if (HasHorizantalCollision())
-		{
-			Cx = PreCx;
-		}
-			
 		Cy++;
-		if (frIsKeyPressed(EKeyInput::KB_DOWN))
-		{
-			while (!HasCollision())
-				Cy++;
-		}
 
 		if (HasCollision())
 		{
@@ -476,8 +496,7 @@ void TetrisRoutine(void *InOutParam)
 			RotateState = 0;
 		}
 			
-		for(int i = 0 ;i < 5 ;++i)
-			WaitForFrame();
+			
 	}
 }
 
