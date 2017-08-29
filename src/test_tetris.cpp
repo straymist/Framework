@@ -62,11 +62,13 @@ TetrisType ZShape[4][4] =
 };
 TetrisType NShape[4][4] =
 {
-	_, _, _, _,
 	_, N, N, _,
 	N, N, _, _,
 	_, _, _, _,
+	_, _, _, _,
 };
+
+int RotateState = 0;
 
 TetrisType Active[4][4];
 TetrisType ActiveType;
@@ -79,6 +81,95 @@ TetrisType Space[SpaceH][SpaceW];
 const int BrickWidth = 10;
 const int RenderOffsetX = 10;
 const int RenderOffsetY = 10;
+
+
+void Rotate3x3(TetrisType Shape[4][4], bool CW)
+{
+	TetrisType Temp[4][4] = { _ };
+	if (CW)
+	{
+
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				Temp[i][j] = Shape[2-j][i];
+	}
+	else
+	{
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				Temp[i][j] = Shape[j][2 - i];
+	}
+
+	for (int i = 0; i < 3; ++i)
+		for (int j = 0; j < 3; ++j)
+			Shape[i][j] = Temp[i][j];
+}
+
+void Rotate4x4(TetrisType Shape[4][4], bool CW)
+{
+	TetrisType Temp[4][4] = { _ };
+	if (CW)
+	{
+
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				Temp[i][j] = Shape[3 - j][i];
+	}
+	else
+	{
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				Temp[i][j] = Shape[j][3 - i];
+	}
+
+	for (int i = 0; i < 4; ++i)
+		for (int j = 0; j < 4; ++j)
+			Shape[i][j] = Temp[i][j];
+}
+
+
+void RotateTetris(bool CW)
+{
+	switch (ActiveType)
+	{
+	case TetrisType::_:
+	case TetrisType::O:
+		break;
+	case TetrisType::T:
+	case TetrisType::L:
+	case TetrisType::R:
+		Rotate3x3(Active, CW);
+		break;
+	case TetrisType::I:
+		if (RotateState == 0)
+		{
+			Rotate4x4(Active, true);
+			RotateState = 1;
+		}			
+		else
+		{
+			Rotate4x4(Active, false);
+			RotateState = 0;
+		}			
+		break;
+	case TetrisType::Z:
+	case TetrisType::N:
+		if (RotateState == 0)
+		{
+			Rotate3x3(Active, true);
+			RotateState = 1;
+		}
+		else
+		{
+			Rotate3x3(Active, false);
+			RotateState = 0;
+		}
+
+		break;
+	}
+}
+
+
 
 void DrawBoundary(int x1, int y1, int x2, int y2)
 {
@@ -198,6 +289,9 @@ void PutTetris(TetrisType Space[4][4], TetrisType Tetris[4][4])
 	}
 }
 
+
+
+
 void PutTetrisType(TetrisType Space[4][4], TetrisType TType)
 {
 	switch (TType)
@@ -251,6 +345,27 @@ bool InRange(int a, int v, int b)
 }
 
 
+
+bool HasHorizantalCollision()
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			TetrisType A = Active[i][j];
+
+			TetrisType S;
+			if (!InRange(0, j + Cx, SpaceW) )
+				S = TetrisType::O;
+			else
+				S = Space[Clamp(0, i + Cy, SpaceH)][Clamp(0, j + Cx, SpaceW)];
+			if (A != TetrisType::_ && S != TetrisType::_)
+				return true;
+		}
+	}
+	return false;
+}
+
 bool HasCollision()
 {
 	for (int i = 0; i < 4; ++i)
@@ -299,10 +414,30 @@ void TetrisRoutine(void *InOutParam)
 
 	PutTetrisType(Active, TetrisType::O);
 	Cx = SpaceW/2;
-	Cy = 10;
+	Cy = 5;
+	RotateState = 0;
 
 	while (1)
 	{
+		int PreCx = Cx;
+
+		TetrisType Temp[4][4];
+		PutTetris(Temp, Active);
+
+		if (frIsKeyPressed(EKeyInput::KB_A))
+		{
+			RotateTetris(false);
+		}
+
+		if (frIsKeyPressed(EKeyInput::KB_D))
+		{
+			RotateTetris(true);
+		}
+
+		if (HasCollision())
+		{
+			PutTetris(Active, Temp);
+		}
 
 		if (frIsKeyPressed(EKeyInput::KB_LEFT))
 		{			
@@ -313,13 +448,32 @@ void TetrisRoutine(void *InOutParam)
 			Cx++;
 		}
 
+		if (HasHorizantalCollision())
+		{
+			Cx = PreCx;
+		}
+			
 		Cy++;
+		if (frIsKeyPressed(EKeyInput::KB_DOWN))
+		{
+			while (!HasCollision())
+				Cy++;
+		}
+
 		if (HasCollision())
 		{
+			// Put it to the stack
 			PutTetris(Space, Active, Cx,Cy-1);
 			TetrisType NextType = (TetrisType)(uint8_t)(Rand() % 7);
-			PutTetrisType(Active, GetNextType());
-			Cy = 20;
+
+			// Check if stack has lines.
+
+			// Change New 
+			ActiveType = GetNextType();
+			PutTetrisType(Active, ActiveType);
+			Cy = 5;
+			Cx = SpaceW / 2;
+			RotateState = 0;
 		}
 			
 		for(int i = 0 ;i < 5 ;++i)
@@ -359,7 +513,6 @@ void MakeTetrisDrawList()
 	DrawBoundary(x,y, x+SpaceW-1, y+SpaceH-1);
 	
 }
-
 
 void CTetrisTest::Open()
 {
