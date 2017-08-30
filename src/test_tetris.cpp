@@ -83,7 +83,7 @@ const int RenderOffsetX = 10;
 const int RenderOffsetY = 10;
 
 
-void Rotate3x3(TetrisType Shape[4][4], bool CW)
+static void Rotate3x3(TetrisType Shape[4][4], bool CW)
 {
 	TetrisType Temp[4][4] = { _ };
 	if (CW)
@@ -105,7 +105,7 @@ void Rotate3x3(TetrisType Shape[4][4], bool CW)
 			Shape[i][j] = Temp[i][j];
 }
 
-void Rotate4x4(TetrisType Shape[4][4], bool CW)
+static void Rotate4x4(TetrisType Shape[4][4], bool CW)
 {
 	TetrisType Temp[4][4] = { _ };
 	if (CW)
@@ -128,7 +128,7 @@ void Rotate4x4(TetrisType Shape[4][4], bool CW)
 }
 
 
-void RotateTetris(bool CW)
+static void RotateTetris(bool CW)
 {
 	switch (ActiveType)
 	{
@@ -171,7 +171,7 @@ void RotateTetris(bool CW)
 
 
 
-void DrawBoundary(int x1, int y1, int x2, int y2)
+static void DrawBoundary(int x1, int y1, int x2, int y2)
 {
 	float w = BrickWidth;
 	ImDrawList *dl = ImGui::GetWindowDrawList();
@@ -202,7 +202,7 @@ void DrawBoundary(int x1, int y1, int x2, int y2)
 
 }
 
-void DrawBrick(int x, int y, TetrisType TType)
+static void DrawBrick(int x, int y, TetrisType TType)
 {
 	ImDrawList *dl = ImGui::GetWindowDrawList();
 	ImVec2 wp = ImGui::GetWindowPos();
@@ -266,7 +266,7 @@ void DrawBrick(int x, int y, TetrisType TType)
 	dl->AddQuad(q[0], q[1], q[2], q[3], color, 2.0f);
 	
 }
-void PutTetris(TetrisType Space[SpaceH][SpaceW], TetrisType Tetris[4][4], int x, int y)
+static void PutTetris(TetrisType Space[SpaceH][SpaceW], TetrisType Tetris[4][4], int x, int y)
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -278,7 +278,7 @@ void PutTetris(TetrisType Space[SpaceH][SpaceW], TetrisType Tetris[4][4], int x,
 	}
 }
 
-void PutTetris(TetrisType Space[4][4], TetrisType Tetris[4][4])
+static void PutTetris(TetrisType Space[4][4], TetrisType Tetris[4][4])
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -292,7 +292,7 @@ void PutTetris(TetrisType Space[4][4], TetrisType Tetris[4][4])
 
 
 
-void PutTetrisType(TetrisType Space[4][4], TetrisType TType)
+static void PutTetrisType(TetrisType Space[4][4], TetrisType TType)
 {
 	switch (TType)
 	{
@@ -321,7 +321,7 @@ void PutTetrisType(TetrisType Space[4][4], TetrisType TType)
 	}
 }
 
-void FillLine(int y, TetrisType TType)
+static void FillLine(int y, TetrisType TType)
 {
 	for (int i = 0; i < SpaceW; ++i)
 	{
@@ -329,7 +329,7 @@ void FillLine(int y, TetrisType TType)
 	}
 }
 
-int Clamp(int a, int v, int b)
+static int Clamp(int a, int v, int b)
 {
 	if (v >= b)
 		return b-1;
@@ -337,7 +337,7 @@ int Clamp(int a, int v, int b)
 		return a;
 	return v;
 }
-bool InRange(int a, int v, int b)
+static bool InRange(int a, int v, int b)
 {
 	if (a <= v && v < b)
 		return true;
@@ -346,7 +346,7 @@ bool InRange(int a, int v, int b)
 
 
 
-bool HasHorizantalCollision()
+static bool HasHorizantalCollision()
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -366,7 +366,7 @@ bool HasHorizantalCollision()
 	return false;
 }
 
-bool HasCollision()
+static bool HasCollision()
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -386,7 +386,7 @@ bool HasCollision()
 	return false;
 }
 
-uint64_t Rand()
+static uint64_t Rand()
 {
 	static uint64_t seed = 123456789;
 	uint64_t m = 4294967296;
@@ -398,7 +398,7 @@ uint64_t Rand()
 
 
 
-TetrisType GetNextType()
+static TetrisType GetNextType()
 {
 	TetrisType NextType = TetrisType::_;
 	while ( NextType == TetrisType::_)
@@ -407,7 +407,7 @@ TetrisType GetNextType()
 
 }
 
-void TetrisRoutine(void *InOutParam)
+static void TetrisRoutine(void *InOutParam)
 {
 	for (int i = 0; i < SpaceH; ++i)
 		FillLine(i, TetrisType::_);
@@ -500,13 +500,13 @@ void TetrisRoutine(void *InOutParam)
 	}
 }
 
-void DoTetris()
+static void DoTetris()
 {
 	DoTask(TetrisRoutine);
 }
 
 
-void MakeTetrisDrawList()
+static void MakeTetrisDrawList()
 {
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	

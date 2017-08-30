@@ -2,7 +2,7 @@
 #include "framework.h"
 
 #define TEST_FILE "test_entries.h"
-#define TEST_CLASS CTetrisTest
+#define TEST_CLASS CAVGTest
 
 #if defined(TEST_CLASS) && defined(TEST_FILE)
 	#include TEST_FILE

@@ -177,6 +177,7 @@
     <ClCompile Include="src\platform\gpu.cpp" />
     <ClCompile Include="src\platform\imgui_dx12.cpp" />
     <ClCompile Include="src\platform\window.cpp" />
+    <ClCompile Include="src\test_avg.cpp" />
     <ClCompile Include="src\test_fiber.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
     </ClCompile>

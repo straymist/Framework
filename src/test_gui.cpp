@@ -1,9 +1,9 @@
 #include "framework.h"
 #include "test_entries.h"
-bool show_test_window = false;
-bool show_another_window = false;
-ImVec4 clear_col = ImColor(114, 144, 154);
-void BuildImguiContent()
+static bool show_test_window = false;
+static bool show_another_window = false;
+static ImVec4 clear_col = ImColor(114, 144, 154);
+static void BuildImguiContent()
 {
 
 	// 1. Show a simple window

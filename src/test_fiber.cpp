@@ -1,7 +1,7 @@
 #include "framework.h"
 #include "test_entries.h"
 
-void Fade(void *UserData)
+static void Fade(void *UserData)
 {
 	for (int i = 0; i < 10; ++i)
 	{
@@ -10,7 +10,7 @@ void Fade(void *UserData)
 	}
 }
 
-void Fade2(void *UserData)
+static void Fade2(void *UserData)
 {
 	for (int i = 0; i < 10; ++i)
 	{
@@ -19,7 +19,7 @@ void Fade2(void *UserData)
 	}
 }
 
-void Anim(void *UserData)
+static void Anim(void *UserData)
 {
 	for (int i = 0; i < 10; ++i)
 	{
@@ -30,7 +30,7 @@ void Anim(void *UserData)
 
 
 
-void Walk(void *ud)
+static void Walk(void *ud)
 {
 	for (int i = 0; i < 10; ++i)
 	{
@@ -39,7 +39,7 @@ void Walk(void *ud)
 	}
 }
 
-void Patrol(void *ud)
+static void Patrol(void *ud)
 {
 	for (int i = 0; i < 10; ++i)
 	{
@@ -48,7 +48,7 @@ void Patrol(void *ud)
 	}
 }
 
-void Idle(void *ud)
+static void Idle(void *ud)
 {
 	for (int i = 0; i < 10; ++i)
 	{
@@ -63,7 +63,7 @@ struct BlackBoard
 	int State;
 };
 
-void BehaviorTree(void * UserData)
+static void BehaviorTree(void * UserData)
 {
 	BlackBoard *bb = (BlackBoard*)UserData;
 	int Wait = 1;
@@ -82,7 +82,7 @@ void BehaviorTree(void * UserData)
 	WaitForCounter(&Wait, 0);
 }
 
-void Root(void *UserData)
+static void Root(void *UserData)
 {
 	int Wait = 2;
 
