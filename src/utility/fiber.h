@@ -11,7 +11,7 @@ void DoTask(FuncType &FuncIn, int *pCounter = nullptr, void *pUserData = nullptr
 }
 
 void WaitForCounter(int *pCounter, int TargetValue);
-void WaitForFrame(size_t NumOfFrames = 1);
+void WaitForFrames(size_t NumOfFrames);
 void WaitForSeconds(float Seconds);
 
 size_t RunScheduler();

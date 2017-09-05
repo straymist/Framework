@@ -4,7 +4,6 @@
 #include "fiber.h"
 #include "container.h"
 
-
 const size_t MAX_FIBER = 128;
 
 struct FiberEntry
@@ -165,7 +164,9 @@ void WaitForCounter(int *pCounter, int TargetValue)
 	et->Counter = pCounter;
 	SwitchToFiber(SchedulerFiber);
 }
-void WaitForFrame(size_t Frames)
+
+
+void WaitForFrames(size_t Frames)
 {
 	CurrentFiber->State = FiberEntry::WAIT_FRAME;
 	CurrentFiber->WaitFrames = Frames;

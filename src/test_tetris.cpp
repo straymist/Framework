@@ -475,7 +475,7 @@ static void TetrisRoutine(void *InOutParam)
 		for (int i = 0; i < 5; ++i)
 		{
 			input.Do();
-			WaitForFrame();
+			WaitForFrames(1);
 		}
 
 		Cy++;

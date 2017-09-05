@@ -6,7 +6,7 @@ static void Fade(void *UserData)
 	for (int i = 0; i < 10; ++i)
 	{
 		dprintf("Fade Tick %d\n", i);
-		WaitForFrame();
+		WaitForFrames(1);
 	}
 }
 
@@ -15,7 +15,7 @@ static void Fade2(void *UserData)
 	for (int i = 0; i < 10; ++i)
 	{
 		dprintf("Fade2 Tick %d\n", i);
-		WaitForFrame();
+		WaitForFrames(1);
 	}
 }
 
@@ -24,7 +24,7 @@ static void Anim(void *UserData)
 	for (int i = 0; i < 10; ++i)
 	{
 		dprintf("Anim Tick %d\n", i);
-		WaitForFrame();
+		WaitForFrames(1);
 	}
 }
 
@@ -35,7 +35,7 @@ static void Walk(void *ud)
 	for (int i = 0; i < 10; ++i)
 	{
 		dprintf("Walk Tick %d\n", i);
-		WaitForFrame();
+		WaitForFrames(1);
 	}
 }
 
@@ -44,7 +44,7 @@ static void Patrol(void *ud)
 	for (int i = 0; i < 10; ++i)
 	{
 		dprintf("Patrol Tick %d\n", i);
-		WaitForFrame();
+		WaitForFrames(1);
 	}
 }
 
@@ -53,7 +53,7 @@ static void Idle(void *ud)
 	for (int i = 0; i < 10; ++i)
 	{
 		dprintf("Idle Tick %d\n", i);
-		WaitForFrame();
+		WaitForFrames(1);
 	}
 }
 
