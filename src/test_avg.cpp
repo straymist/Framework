@@ -48,8 +48,8 @@ static void ShowTask(void *Param)
 			x = 0;
 		}		
 
-		for(int i = 0 ; i < 3 ; ++i)
-			WaitForFrame();
+		WaitForSeconds(0.3f);
+
 	}
 
 }

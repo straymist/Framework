@@ -13,6 +13,7 @@ struct FiberEntry
 		SUSPEND,
 		RUNNING,
 		WAIT_FRAME,
+		WAIT_SECONDS,
 		WAIT_COUNTER,
 		DONE
 	};
@@ -22,11 +23,11 @@ struct FiberEntry
 	int *pCounter;
 	EState State;
 	void *pUserData; // UserData could be input or output.
+	int WaitFrames;
+	float WaitSeconds;
 };
 FixedArray<FiberEntry, MAX_FIBER> FiberEntries;
 FiberEntry *CurrentFiber;
-
-FixedArray<FiberEntry*, MAX_FIBER> DelFiberEntries;;
 
 struct WaitCounterEntry
 {
@@ -35,13 +36,8 @@ struct WaitCounterEntry
 	FiberEntry *WhoWaitMe;
 };
 FixedArray<WaitCounterEntry, MAX_FIBER> WaitCounterEntries;
-FixedArray<WaitCounterEntry*, MAX_FIBER> DelWaitEntries;;
 
-struct WaitFrameEntry
-{
-	FiberEntry *WhoWaitMe;
-};
-FixedArray<WaitFrameEntry, MAX_FIBER> WaitFrameEntries;
+float ElapsedSecsThisFrame = 1.0f / 60.0f;
 
 LPVOID SchedulerFiber;
 size_t RunScheduler()
@@ -64,14 +60,31 @@ size_t RunScheduler()
 		}	
 	}
 
-	// Wait a frame
+	// Wait frames
 	for (int i = 0; i < FiberEntries.Size(); ++i)
 	{
 		if (FiberEntries[i]->State == FiberEntry::WAIT_FRAME)
 		{
 			CurrentFiber = FiberEntries[i];
-			CurrentFiber->State = FiberEntry::RUNNING;
-			SwitchToFiber(CurrentFiber->pFiber);
+			CurrentFiber->WaitFrames--;
+			if (CurrentFiber->WaitFrames <= 0)
+			{
+				CurrentFiber->State = FiberEntry::RUNNING;
+				SwitchToFiber(CurrentFiber->pFiber);
+			}
+		}
+		else if (FiberEntries[i]->State == FiberEntry::WAIT_SECONDS)
+		{
+			CurrentFiber = FiberEntries[i];
+			CurrentFiber->WaitSeconds -= ElapsedSecsThisFrame;
+
+			if (CurrentFiber->WaitSeconds <= 0)
+			{
+				CurrentFiber->WaitSeconds = -CurrentFiber->WaitSeconds;
+
+				CurrentFiber->State = FiberEntry::RUNNING;
+				SwitchToFiber(CurrentFiber->pFiber);
+			}
 		}
 	}
 	// Wait for Counter
@@ -138,6 +151,8 @@ void DoTaskImpl(std::function<void(void*)> &fn, int *pCounter, void *pUserData )
 	entry->pCounter = pCounter;
 	entry->pUserData = pUserData;
 	entry->State = FiberEntry::SUSPEND;
+	entry->WaitFrames = 0;
+	entry->WaitSeconds = 0.0f;
 }
 
 void WaitForCounter(int *pCounter, int TargetValue)
@@ -149,8 +164,15 @@ void WaitForCounter(int *pCounter, int TargetValue)
 	et->Counter = pCounter;
 	SwitchToFiber(SchedulerFiber);
 }
-void WaitForFrame()
+void WaitForFrame(size_t Frames)
 {
 	CurrentFiber->State = FiberEntry::WAIT_FRAME;
+	CurrentFiber->WaitFrames = Frames;
+	SwitchToFiber(SchedulerFiber);
+}
+void WaitForSeconds(float Seconds)
+{
+	CurrentFiber->State = FiberEntry::WAIT_SECONDS;
+	CurrentFiber->WaitSeconds = Seconds;
 	SwitchToFiber(SchedulerFiber);
 }
