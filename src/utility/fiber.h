@@ -14,5 +14,4 @@ void WaitForCounter(int *pCounter, int TargetValue);
 void WaitForFrame(size_t NumOfFrames = 1);
 void WaitForSeconds(float Seconds);
 
-
 size_t RunScheduler();
